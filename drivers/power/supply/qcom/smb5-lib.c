@@ -2482,6 +2482,11 @@ int smblib_get_prop_batt_status(struct smb_charger *chg,
 		}*/
 	}
 
+	if (smartchg_stop_flag) {
+		val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
+		return 0;
+	}
+
 	rc = smblib_get_prop_usb_online(chg, &pval);
 	if (rc < 0) {
 		smblib_err(chg, "Couldn't get usb online property rc=%d\n",
