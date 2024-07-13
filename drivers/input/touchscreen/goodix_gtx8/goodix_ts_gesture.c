@@ -72,6 +72,7 @@ struct gesture_module {
 	atomic_t zen_motion;
 	atomic_t dclick;
 	atomic_t swipeup;
+	atomic_t fod_pressed;
 	atomic_t aod_enable;
 	atomic_t music_control;
 	atomic_t fp_wakeup;
@@ -227,6 +228,12 @@ static ssize_t gsx_gesture_data_show(struct goodix_ext_module *module,
 	return count;
 }
 // ASUS_BSP +++ Touch
+
+static ssize_t gsx_fod_pressed_show(struct goodix_ext_module *module,
+		char *buf)
+{
+	return scnprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&gsx_gesture->fod_pressed));
+}
 
 static ssize_t gsx_aod_enable_show(struct goodix_ext_module *module,
 		char *buf)
@@ -418,6 +425,7 @@ const struct goodix_ext_attribute gesture_attrs[] = {
 		gsx_zenmotion_enable_store),
 	__EXTMOD_ATTR(dclick, 0666, gsx_dclick_enable_show,
 		gsx_dclick_enable_store),
+	__EXTMOD_ATTR(fod_pressed, 0444, gsx_fod_pressed_show, NULL),
 	__EXTMOD_ATTR(aod_enable, 0666, gsx_aod_enable_show,
 		gsx_aod_enable_store),
 	__EXTMOD_ATTR(swipeup, 0666, gsx_swipeup_enable_show,
@@ -650,6 +658,7 @@ static int gsx_gesture_init(struct goodix_ts_core *core_data,
 // ASUS_BSP +++ Touch
 	atomic_set(&gsx_gesture->dclick, 0);
 	atomic_set(&gsx_gesture->swipeup, 0);
+	atomic_set(&gsx_gesture->fod_pressed, 0);
 	atomic_set(&gsx_gesture->aod_enable, 0);
 	atomic_set(&gsx_gesture->zen_motion, 0);
 	atomic_set(&gsx_gesture->fp_wakeup, 0);
@@ -673,6 +682,7 @@ static int gsx_gesture_exit(struct goodix_ts_core *core_data,
 // ASUS_BSP +++ Touch
 	atomic_set(&gsx_gesture->dclick, 0);
 	atomic_set(&gsx_gesture->swipeup, 0);
+	atomic_set(&gsx_gesture->fod_pressed, 0);
 	atomic_set(&gsx_gesture->aod_enable, 0);
 	atomic_set(&gsx_gesture->zen_motion, 0);
 	atomic_set(&gsx_gesture->fp_wakeup, 0);
@@ -795,6 +805,10 @@ static int report_gesture_key(struct input_dev *dev, char keycode)
 			ts_info("Gesture KEY_F -- X/Y/W data: %d,%d,%d",data_x,data_y,data_w);
 #endif
 			asus_display_report_fod_touched();
+
+			atomic_set(&gsx_gesture->fod_pressed, 1);
+			sysfs_notify(&gsx_gesture->module.kobj, NULL, "fod_pressed");
+
 			enable_aod_processing(true);
 #if 0
 			input_mt_slot(dev, 0);
@@ -929,6 +943,7 @@ void enable_aod_processing(bool en)
 		atomic_set(&aod_processing, 1);
 	} else if ((en == false) && (atomic_read(&aod_processing) != 0)) {
 		atomic_set(&aod_processing, 0);
+		atomic_set(&gsx_gesture->fod_pressed, 0);
 		input_switch_key(input_dev, KEY_U);
 		ts_info("KEY_U");
 	}
