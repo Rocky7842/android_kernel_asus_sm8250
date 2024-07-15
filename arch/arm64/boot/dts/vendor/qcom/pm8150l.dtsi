@@ -383,13 +383,6 @@
 				led-sources = <1>;
 				linux,default-trigger = "timer";
 			};
-
-			blue {
-				label = "blue";
-				pwms = <&pm8150l_lpg 2 1000000>;
-				led-sources = <2>;
-				linux,default-trigger = "timer";
-			};
 		};
 
 		pm8150a_amoled: qcom,amoled {
