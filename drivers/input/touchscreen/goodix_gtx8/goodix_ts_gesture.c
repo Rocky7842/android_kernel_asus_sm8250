@@ -789,7 +789,7 @@ static int report_gesture_key(struct input_dev *dev, char keycode)
 		}
 	}
 
-	if(atomic_read(&gsx_gesture->aod_enable)==1) {
+	if(atomic_read(&gsx_gesture->aod_enable)==1 && atomic_read(&gsx_gesture->fp_wakeup)==1) {
 		if(keycode == 'F') {
 			input_switch_key(dev, KEY_F);
 			ts_info("KEY_F");
