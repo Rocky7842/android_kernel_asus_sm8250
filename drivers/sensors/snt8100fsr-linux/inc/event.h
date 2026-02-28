@@ -56,7 +56,7 @@ void enable_write_flash_reg_part_req(struct snt8100fsr *snt8100fsr_g,
                                        const char *buf,
                                        size_t count,
                                        int sc_maj_id);
-int enable_boot_init_reg_with_file(void);
+int enable_boot_init_reg_with_file(struct snt8100fsr *snt8100fsr);
 void enable_boot_init_reg_req(struct snt8100fsr *snt8100fsr,
                                        const char *buf,
                                        size_t count);

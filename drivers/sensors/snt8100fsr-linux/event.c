@@ -20,6 +20,7 @@
 * MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
 *****************************************************************************/
 #include <linux/kernel.h>
+#include <linux/firmware.h>
 
 #include "config.h"
 #include "serial_bus.h"
@@ -464,7 +465,7 @@ int start_event_processing(struct snt8100fsr *snt8100fsr) {
     /*Calibration write data patch +++*/
     // Initialize from boot_init_reg file
     // (such as calibration data)
-    ret = enable_boot_init_reg_with_file();
+    ret = enable_boot_init_reg_with_file(snt8100fsr);
     if (ret) {
         PRINT_WARN("Not calibrated: no file boot_reg_init found");
     }
@@ -627,7 +628,7 @@ static int init_after_reset( struct snt8100fsr *snt8100fsr) {
     /* Calibration write data +++ */
     // Restore from boot_init_reg file
     // (such as calibration data)
-    ret = enable_boot_init_reg_with_file();
+    ret = enable_boot_init_reg_with_file(snt8100fsr);
     if (ret) {
         PRINT_WARN("Not calibrated: no file boot_reg_init found");
         return -1;
@@ -2780,37 +2781,34 @@ cleanup:
 }
 
 /* Calibration write data +++*/
-#define BOOT_INIT_REG_LOCATION "/vendor/factory/snt_reg_init"
-#define BOOT_INIT_BUFFER_SIZE  1024
-int enable_boot_init_reg_with_file(void)
+#define BOOT_INIT_REG_LOCATION "snt_reg_init"
+
+int enable_boot_init_reg_with_file(struct snt8100fsr *snt8100fsr)
 {
-    struct file* boot_init_file;
-    char buffer[BOOT_INIT_BUFFER_SIZE];
-    int ret, numRead, boot_init_file_size;
+    const struct firmware *fw;
+    int ret;
 
     PRINT_FUNC();
 
-    ret = file_open(BOOT_INIT_REG_LOCATION, O_RDONLY, 0, &boot_init_file);
+    if (!snt8100fsr || !snt8100fsr->dev) {
+        PRINT_CRIT("snt8100fsr or snt8100fsr->dev is NULL");
+        return -EINVAL;
+    }
+
+    ret = request_firmware(&fw, BOOT_INIT_REG_LOCATION, snt8100fsr->dev);
     if(ret) {
-        PRINT_INFO("Unable to open file %s, error %d",
+        PRINT_INFO("Unable to request firmware %s, error %d",
                          BOOT_INIT_REG_LOCATION, ret);
         return -1;
     }
 
-    ret = file_size(boot_init_file, &boot_init_file_size);
-    if (ret) {
-        PRINT_INFO("Unable to get file size error %d", ret);
-        return -1;
+    if (fw->size > 0) {
+        enable_boot_init_reg_req(snt8100fsr, fw->data, (size_t)fw->size);
+    } else {
+        PRINT_INFO("Empty %s firmware", BOOT_INIT_REG_LOCATION);
     }
 
-    memset(buffer, 0, sizeof(buffer));
-    numRead = file_read(boot_init_file, 0, buffer, boot_init_file_size);
-    if (numRead <= 0) {
-        PRINT_INFO("Bad read from boot init file");
-        return -1;
-    }
-    enable_boot_init_reg_req(snt8100fsr_g, buffer, (size_t)numRead);
-
+    release_firmware(fw);
     PRINT_DEBUG("done.");
     return 0;
 }
@@ -2855,7 +2853,7 @@ void enable_boot_init_reg_req(struct snt8100fsr *snt8100fsr,
                     reg_id, dataIdx, len, reg_data[dataIdx]);
         }
 	//PRINT_INFO("Before sb_write_fifo, reg_id = %d, len = %d, times = %d", reg_id, len, times);
-        ret = sb_write_fifo(snt8100fsr_g,
+        ret = sb_write_fifo(snt8100fsr,
                 reg_id,
                 len*2,
                 reg_data);

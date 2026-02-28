@@ -20,6 +20,7 @@
 * MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
 *****************************************************************************/
 #include <linux/kernel.h>
+#include <linux/firmware.h>
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/time.h>
@@ -1428,32 +1429,38 @@ ssize_t sysfs_chip_reset_store(struct device *dev,
 /* Calibration write data --- */
 
 static int open_other_file(const char* filepath) {
-	struct file *pfile = NULL;
-	loff_t pos;
-	//unsigned char *fw_buf = kmalloc(GRIP_FW_SIZE ,GFP_ATOMIC);
+	const struct firmware *fw;
 	static uint8_t fw_buf[128];
-	mm_segment_t old_fs;
+	int ret;
 	
 	memset(fw_buf, 0, 128);
-	PRINT_INFO("Read file %s", filepath);
-	if (NULL == pfile) {
-		pfile = filp_open(filepath, O_RDONLY, 0);
+	PRINT_INFO("Request firmware %s", filepath);
+	
+	if (!snt8100fsr_g || !snt8100fsr_g->dev) {
+		PRINT_ERR("snt8100fsr_g is null");
+		return -EINVAL;
 	}
-	if (IS_ERR(pfile)) {
-		PRINT_ERR("error occured while opening file %s", filepath);
-		return -EIO;
-	}
-	old_fs = get_fs();
-	set_fs(KERNEL_DS);
-	pos = 0;
-	vfs_read(pfile, fw_buf, 128, &pos);
-	set_fs(old_fs);
-	filp_close(pfile, NULL);
-	PRINT_INFO("%s", fw_buf);
 
-	if(strstr(fw_buf, "002.0012.161") != NULL){
-		snt8100fsr_g->fw_sec_source = true;
+	ret = request_firmware(&fw, filepath, snt8100fsr_g->dev);
+	if (ret) {
+		PRINT_ERR("error occured while requesting firmware %s, ret=%d", filepath, ret);
+		return ret;
 	}
+
+	if (fw->size > 0) {
+		size_t copy_size = fw->size < 127 ? fw->size : 127;
+		memcpy(fw_buf, fw->data, copy_size);
+		fw_buf[copy_size] = '\0';
+		PRINT_INFO("%s", fw_buf);
+
+		if(strstr(fw_buf, "002.0012.161") != NULL){
+			snt8100fsr_g->fw_sec_source = true;
+		}
+	} else {
+		PRINT_INFO("Empty firmware %s", filepath);
+	}
+
+	release_firmware(fw);
 	PRINT_INFO("Use sec source fw: %s", snt8100fsr_g->fw_sec_source? "true":"false");
 	return 0;
 }

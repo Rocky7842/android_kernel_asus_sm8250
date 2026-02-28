@@ -161,7 +161,7 @@
 // The location of the flash register partition read file
 #define FRP_CAPTURE_FILE_LOCATION "/data/frp_out.txt"
 
-#define GRIP_FW_VERSION "/vendor/factory/fw_version.txt"
+#define GRIP_FW_VERSION "fw_version.txt"
 #define GRIP_FW_SIZE 128
 
 // SPI Bus Settings if not loaded via DeviceTree nodes (bottom of file for chart)
