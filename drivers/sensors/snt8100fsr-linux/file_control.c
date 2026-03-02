@@ -4760,10 +4760,6 @@ ssize_t Grip_Tap1_Vibtator_enable_proc_write(struct file *filp, const char __use
 		return -EFAULT;
 	}
 	val = (int)simple_strtol(messages, NULL, 10);
-	if(grip_status_g->G_TAP1_VIB_EN==val){
-		PRINT_INFO("repeat, skip it");
-		return len;
-	}
 	grip_tap1_vibrator_enable_func(val);
 	return len;
 }
@@ -4810,10 +4806,6 @@ ssize_t Grip_Tap2_Vibtator_enable_proc_write(struct file *filp, const char __use
 		return -EFAULT;
 	}
 	val = (int)simple_strtol(messages, NULL, 10);
-	if(grip_status_g->G_TAP2_VIB_EN==val){
-		PRINT_INFO("repeat, skip it");
-		return len;
-	}
 	grip_tap2_vibrator_enable_func(val);
 	return len;
 }
