@@ -1,7 +1,0 @@
-menu "tuxera user/userdebug control"
-
-config TUXERA_USERDEBUG
-	tristate "tuxera user/userdebug control"
-	default n
-
-endmenu
