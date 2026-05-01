@@ -2,7 +2,7 @@
 # Makefile for the input core drivers.
 #
 # Each configuration option enables a list of files
-ccflags-y += -Idrivers/sensors/snt8100fsr-linux/inc
+ccflags-y += -I$(srctree)/drivers/sensors/snt8100fsr-linux/inc
 #ccflags-y += -Werror
 #ccflags-y += -Idrivers/sensors/snt8100fsr-linux/inc
 
