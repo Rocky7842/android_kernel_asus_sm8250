@@ -139,8 +139,8 @@ int snt_activity_request(void)
 }
 
 
-ssize_t sysfs_enable_dynamic_pwr_ctl_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_enable_dynamic_pwr_ctl_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     PRINT_FUNC("%lu bytes", count);
@@ -159,8 +159,8 @@ ssize_t sysfs_enable_dynamic_pwr_ctl_store(struct device *dev,
     return count;
 }
 
-static ssize_t sysfs_enable_dynamic_pwr_ctl_show(struct device *dev,
-                            struct device_attribute *attr,
+static ssize_t sysfs_enable_dynamic_pwr_ctl_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf) {
     int ret;
     PRINT_FUNC();
@@ -174,8 +174,8 @@ static ssize_t sysfs_enable_dynamic_pwr_ctl_show(struct device *dev,
 /*
  * SysFS interface for showing and storing generic registers
  */
-static ssize_t sysfs_register_show(struct device *dev,
-                            struct device_attribute *attr,
+static ssize_t sysfs_register_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf) {
     uint16_t reg_value;
     char *reg_name;
@@ -207,8 +207,8 @@ static ssize_t sysfs_register_show(struct device *dev,
     return ret;
 }
 
-static ssize_t sysfs_register_store(struct device *dev,
-                             struct device_attribute *attr,
+static ssize_t sysfs_register_store(struct kobject *kobj,
+                             struct kobj_attribute *attr,
                              const char *buf,
                              size_t count) {
     uint16_t reg_value;
@@ -263,15 +263,15 @@ static ssize_t sysfs_register_store(struct device *dev,
 /*
  * SysFS interface for reading and writing a generic 32 bit value
  */
-static ssize_t sysfs_uint32_show(struct device *dev,
-                                 struct device_attribute *attr,
+static ssize_t sysfs_uint32_show(struct kobject *kobj,
+                                 struct kobj_attribute *attr,
                                  uint32_t *value,
                                  char *buf) {
     return snprintf(buf, PAGE_SIZE, "%d\n", *value);
 }
 
-static ssize_t sysfs_uint32_store(struct device *dev,
-                                  struct device_attribute *attr,
+static ssize_t sysfs_uint32_store(struct kobject *kobj,
+                                  struct kobj_attribute *attr,
                                   uint32_t *result,
                                   const char *buf,
                                   size_t count) {
@@ -297,15 +297,15 @@ static ssize_t sysfs_uint32_store(struct device *dev,
 /*
  * SysFS interface for logging the no touch frame report
  */
-ssize_t sysfs_log_no_touch_frame_show(struct device *dev,
-                                      struct device_attribute *attr,
+ssize_t sysfs_log_no_touch_frame_show(struct kobject *kobj,
+                                      struct kobj_attribute *attr,
                                       char *buf) {
     return snprintf(buf, PAGE_SIZE, "%d\n",
                     log_no_touch_frame_file != NULL ? 1 : 0);
 }
 
-ssize_t sysfs_log_no_touch_frame_store(struct device *dev,
-                                       struct device_attribute *attr,
+ssize_t sysfs_log_no_touch_frame_store(struct kobject *kobj,
+                                       struct kobj_attribute *attr,
                                        const char *buf,
                                        size_t count) {
     int ret;
@@ -341,8 +341,8 @@ ssize_t sysfs_log_no_touch_frame_store(struct device *dev,
     return count;
 }
 
-ssize_t sysfs_sys_track_report_store(struct device *dev,
-                                struct device_attribute *attr,
+ssize_t sysfs_sys_track_report_store(struct kobject *kobj,
+                                struct kobj_attribute *attr,
                                 const char *buf,
                                 size_t count) {
     int ret;
@@ -379,8 +379,8 @@ ssize_t sysfs_sys_track_report_store(struct device *dev,
 /*
  * SysFS interface to get a copy of the latest track report
  */
-ssize_t sysfs_track_report_show(struct device *dev,
-                                struct device_attribute *attr,
+ssize_t sysfs_track_report_show(struct kobject *kobj,
+                                struct kobj_attribute *attr,
                                 char *buf) {
     int i = 0;
     ssize_t ret = 0;
@@ -403,8 +403,8 @@ ssize_t sysfs_track_report_show(struct device *dev,
     return ret;
 }
 
-ssize_t sysfs_track_report_store(struct device *dev,
-                              struct device_attribute *attr,
+ssize_t sysfs_track_report_store(struct kobject *kobj,
+                              struct kobj_attribute *attr,
                               const char *buf,
                               size_t count) {
     long value;
@@ -427,15 +427,15 @@ ssize_t sysfs_track_report_store(struct device *dev,
 /*
  * SysFS interface for starting and stopping the logging of track reports
  */
-ssize_t sysfs_log_track_report_show(struct device *dev,
-        struct device_attribute *attr, char *buf)
+ssize_t sysfs_log_track_report_show(struct kobject *kobj,
+        struct kobj_attribute *attr, char *buf)
 {
     return snprintf(buf, PAGE_SIZE, "%d\n",
                     log_track_reports_file != NULL ? 1 : 0);
 }
 
-ssize_t sysfs_log_track_report_store(struct device *dev,
-                                     struct device_attribute *attr,
+ssize_t sysfs_log_track_report_store(struct kobject *kobj,
+                                     struct kobj_attribute *attr,
                                      const char *buf,
                                      size_t count)
 {
@@ -478,15 +478,15 @@ ssize_t sysfs_log_track_report_store(struct device *dev,
 /*
  * SysFS interface for retrieving the event log
  */
-ssize_t sysfs_event_log_show(struct device *dev,
-        struct device_attribute *attr, char *buf)
+ssize_t sysfs_event_log_show(struct kobject *kobj,
+        struct kobj_attribute *attr, char *buf)
 {
     return snprintf(buf, PAGE_SIZE, "%d\n",
                     snt8100fsr_g->event_log_file != NULL ? 1 : 0);
 }
 
-ssize_t sysfs_event_log_store(struct device *dev,
-                                     struct device_attribute *attr,
+ssize_t sysfs_event_log_store(struct kobject *kobj,
+                                     struct kobj_attribute *attr,
                                      const char *buf,
                                      size_t count)
 {
@@ -527,15 +527,15 @@ ssize_t sysfs_event_log_store(struct device *dev,
 }
 
 
-ssize_t sysfs_log_track_report_bin_show(struct device *dev,
-        struct device_attribute *attr, char *buf)
+ssize_t sysfs_log_track_report_bin_show(struct kobject *kobj,
+        struct kobj_attribute *attr, char *buf)
 {
     return snprintf(buf, PAGE_SIZE, "%d\n",
                     log_track_reports_bin_file != NULL ? 1 : 0);
 }
 
-ssize_t sysfs_log_track_report_bin_store(struct device *dev,
-                                     struct device_attribute *attr,
+ssize_t sysfs_log_track_report_bin_store(struct kobject *kobj,
+                                     struct kobj_attribute *attr,
                                      const char *buf,
                                      size_t count)
 {
@@ -575,8 +575,8 @@ ssize_t sysfs_log_track_report_bin_store(struct device *dev,
 }
 
 
-ssize_t sysfs_deep_trace_store(struct device *dev,
-                                     struct device_attribute *attr,
+ssize_t sysfs_deep_trace_store(struct kobject *kobj,
+                                     struct kobj_attribute *attr,
                                      const char *buf,
                                      size_t count)
 {
@@ -614,15 +614,15 @@ ssize_t sysfs_deep_trace_store(struct device *dev,
 /*
  * SysFS interface for starting and stopping the logging of d1test data
  */
-ssize_t sysfs_log_d1test_show(struct device *dev,
-                              struct device_attribute *attr,
+ssize_t sysfs_log_d1test_show(struct kobject *kobj,
+                              struct kobj_attribute *attr,
                               char *buf) {
     return snprintf(buf, PAGE_SIZE, "%d\n",
                     log_d1test_file != NULL ? 1 : 0);
 }
 
-ssize_t sysfs_log_d1test_store(struct device *dev,
-                               struct device_attribute *attr,
+ssize_t sysfs_log_d1test_store(struct kobject *kobj,
+                               struct kobj_attribute *attr,
                                const char *buf,
                                size_t count) {
     int ret;
@@ -659,15 +659,15 @@ ssize_t sysfs_log_d1test_store(struct device *dev,
 /*
  * SysFS interface for starting and stopping the logging of frame data
  */
-ssize_t sysfs_log_frames_show(struct device *dev,
-                             struct device_attribute *attr,
+ssize_t sysfs_log_frames_show(struct kobject *kobj,
+                             struct kobj_attribute *attr,
                              char *buf) {
     return snprintf(buf, PAGE_SIZE, "%d\n",
                     log_frame_file != NULL ? 1 : 0);
 }
 
-ssize_t sysfs_log_frames_store(struct device *dev,
-                              struct device_attribute *attr,
+ssize_t sysfs_log_frames_store(struct kobject *kobj,
+                              struct kobj_attribute *attr,
                               const char *buf,
                               size_t count) {
     int ret;
@@ -722,8 +722,8 @@ error_state:
 /*
  * SysFS interface for product config string
  */
-ssize_t sysfs_product_config_show(struct device *dev,
-                                  struct device_attribute *attr,
+ssize_t sysfs_product_config_show(struct kobject *kobj,
+                                  struct kobj_attribute *attr,
                                   char *buf) {
     char *product_string;
     int ret;
@@ -757,8 +757,8 @@ ssize_t sysfs_product_config_show(struct device *dev,
 /*
  * SysFS interface for version string
  */
-ssize_t sysfs_version_show(struct device *dev,
-                                  struct device_attribute *attr,
+ssize_t sysfs_version_show(struct kobject *kobj,
+                                  struct kobj_attribute *attr,
                                   char *buf) {
 
     return snprintf(buf, PAGE_SIZE, "%s\n", SNT_VERSION);
@@ -768,24 +768,24 @@ ssize_t sysfs_version_show(struct device *dev,
  * SysFS interface for setting the suspended frame rate.
  * This frame rate will be set when i2c_suspend() or spi_suspend() is called.
  */
-ssize_t sysfs_suspended_frame_rate_show(struct device *dev,
-                                        struct device_attribute *attr,
+ssize_t sysfs_suspended_frame_rate_show(struct kobject *kobj,
+                                        struct kobj_attribute *attr,
                                         char *buf) {
     int ret;
     PRINT_FUNC();
-    ret = sysfs_uint32_show(dev, attr,
+    ret = sysfs_uint32_show(kobj, attr,
                             &snt8100fsr_g->suspended_frame_rate, buf);
     PRINT_DEBUG("done");
     return ret;
 }
 
-ssize_t sysfs_suspended_frame_rate_store(struct device *dev,
-                                         struct device_attribute *attr,
+ssize_t sysfs_suspended_frame_rate_store(struct kobject *kobj,
+                                         struct kobj_attribute *attr,
                                          const char *buf,
                                          size_t count) {
     int ret;
     PRINT_FUNC();
-    ret = sysfs_uint32_store(dev, attr,
+    ret = sysfs_uint32_store(kobj, attr,
                              &snt8100fsr_g->suspended_frame_rate,
                              buf, count);
     PRINT_DEBUG("done");
@@ -795,8 +795,8 @@ ssize_t sysfs_suspended_frame_rate_store(struct device *dev,
 /*
  * SysFS interface for waking up the device
  */
-ssize_t sysfs_wake_device_store(struct device *dev,
-                                struct device_attribute *attr,
+ssize_t sysfs_wake_device_store(struct kobject *kobj,
+                                struct kobj_attribute *attr,
                                 const char *buf,
                                 size_t count) {
     int ret = -1;
@@ -840,8 +840,8 @@ ssize_t sysfs_wake_device_store(struct device *dev,
 /*
  * SysFS interface for re-loading the registers from disk
  */
-ssize_t sysfs_load_registers_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_load_registers_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     PRINT_FUNC("%zu bytes", count);
@@ -877,8 +877,8 @@ ssize_t sysfs_load_registers_store(struct device *dev,
  * SysFS interface for showing a list of our available hardware registers
  * and corresponding numerical address.
  */
-ssize_t sysfs_list_registers_show(struct device *dev,
-                                  struct device_attribute *attr,
+ssize_t sysfs_list_registers_show(struct kobject *kobj,
+                                  struct kobj_attribute *attr,
                                   char *buf) {
 
     int ret = 0;
@@ -895,8 +895,8 @@ ssize_t sysfs_list_registers_show(struct device *dev,
     return ret;
 }
 
-ssize_t do_write_reg_script(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t do_write_reg_script(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count,
                                            int sc_maj_id) {
@@ -973,8 +973,8 @@ cleanup:
 /*
  * SysFS interface for showing status of fwupdate
  */
-ssize_t sysfs_fwupdate_show(struct device *dev,
-                            struct device_attribute *attr,
+ssize_t sysfs_fwupdate_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf)
 {
     int ret;
@@ -989,8 +989,8 @@ ssize_t sysfs_fwupdate_show(struct device *dev,
 /*
  * SysFS interface updating the firmware image on system flash
  */
-ssize_t sysfs_fwupdate_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_fwupdate_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     char *p_buf;
@@ -1014,8 +1014,8 @@ ssize_t sysfs_fwupdate_store(struct device *dev,
     return count;
 }
 
-ssize_t sysfs_write_flash_reg_part_file_store(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_write_flash_reg_part_file_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
                                            
@@ -1027,15 +1027,15 @@ ssize_t sysfs_write_flash_reg_part_file_store(struct device *dev,
 #endif
 
 
-    return do_write_reg_script( dev, 
+    return do_write_reg_script( kobj, 
                                 attr, 
                                 buf, 
                                 count, 
                                 mc_update_regs);
 }
 
-ssize_t sysfs_write_flash_reg_part_store(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_write_flash_reg_part_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
     PRINT_FUNC("%zu bytes", count);   
@@ -1054,8 +1054,8 @@ ssize_t sysfs_write_flash_reg_part_store(struct device *dev,
 }
 
 
-ssize_t sysfs_read_flash_reg_part_store (struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_read_flash_reg_part_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
     int ret;
@@ -1220,14 +1220,14 @@ errexit:
  * SysFS interface to enable reporting to demo app
  */
  
-ssize_t sysfs_enable_demo_app_show(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_enable_demo_app_show(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    char *buf) {
     return snprintf(buf, PAGE_SIZE, "%d\n", snt8100fsr_g->en_demo);
 }
 
-ssize_t sysfs_enable_demo_app_store(struct device *dev,
-                                    struct device_attribute *attr,
+ssize_t sysfs_enable_demo_app_store(struct kobject *kobj,
+                                    struct kobj_attribute *attr,
                                     const char *buf,
                                     size_t count) {
     long value;
@@ -1250,8 +1250,8 @@ ssize_t sysfs_enable_demo_app_store(struct device *dev,
 /*
  * SysFS interface for read the Flash Register Partition
  */
-ssize_t sysfs_read_flash_reg_part_show(struct device *dev,
-                                       struct device_attribute *attr,
+ssize_t sysfs_read_flash_reg_part_show(struct kobject *kobj,
+                                       struct kobj_attribute *attr,
                                        char *buf)
 {
     int ret;
@@ -1375,8 +1375,8 @@ errexit:
 #endif
 // SUPPORT_FLASH
 
-ssize_t sysfs_reg_script_file_store(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_reg_script_file_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
                                            
@@ -1388,7 +1388,7 @@ ssize_t sysfs_reg_script_file_store(struct device *dev,
 #endif
 
 
-    return do_write_reg_script( dev, 
+    return do_write_reg_script( kobj, 
                                 attr, 
                                 buf, 
                                 count, 
@@ -1396,8 +1396,8 @@ ssize_t sysfs_reg_script_file_store(struct device *dev,
 }
 
 /* Calibration write data +++ */
-ssize_t sysfs_boot_init_reg_store(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_boot_init_reg_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
     PRINT_FUNC("%zu bytes", count);
@@ -1410,8 +1410,8 @@ ssize_t sysfs_boot_init_reg_store(struct device *dev,
     return count;
 }
 extern int write_fail_count;
-ssize_t sysfs_chip_reset_store(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_chip_reset_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
     PRINT_FUNC("%zu bytes", count);
@@ -1465,8 +1465,8 @@ static int open_other_file(const char* filepath) {
 	return 0;
 }
 
-ssize_t sysfs_version_info_store(struct device *dev,
-                                           struct device_attribute *attr,
+ssize_t sysfs_version_info_store(struct kobject *kobj,
+                                           struct kobj_attribute *attr,
                                            const char *buf,
                                            size_t count) {
     PRINT_FUNC("%zu bytes", count);
@@ -1478,13 +1478,13 @@ ssize_t sysfs_version_info_store(struct device *dev,
 /*
  * SysFS interface for --SetSysParam
  */
-ssize_t sysfs_set_sys_param_show(struct device *dev,
-                            struct device_attribute *attr,
+ssize_t sysfs_set_sys_param_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf)
 {
     int ret;
     PRINT_FUNC("status %d", snt8100fsr_g->set_sys_param_status);
-    ret = sysfs_uint32_show(dev, attr,
+    ret = sysfs_uint32_show(kobj, attr,
                             &snt8100fsr_g->set_sys_param_status, buf);
     PRINT_DEBUG("done %d", ret);
     return ret;
@@ -1493,8 +1493,8 @@ ssize_t sysfs_set_sys_param_show(struct device *dev,
 /*
  *
  */
-ssize_t sysfs_set_sys_param_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_set_sys_param_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
 
@@ -1546,8 +1546,8 @@ errexit:
 /*
  * SysFS Interface for profile
  */
-ssize_t sysfs_profile_show(struct device *dev,
-                            struct device_attribute *attr,
+ssize_t sysfs_profile_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf) {
     int ret = 0;
 
@@ -1561,8 +1561,8 @@ ssize_t sysfs_profile_show(struct device *dev,
     return ret;
 }
 
-ssize_t sysfs_profile_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_profile_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     
@@ -1596,8 +1596,8 @@ ssize_t sysfs_profile_store(struct device *dev,
 /*
  * SysFS interface for --GetSysParam
  */
-ssize_t sysfs_get_sys_param_show(struct device *dev,
-                            struct device_attribute *attr,
+ssize_t sysfs_get_sys_param_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf)
 {
     int ret=0;
@@ -1645,8 +1645,8 @@ ssize_t sysfs_get_sys_param_show(struct device *dev,
 /*
  *
  */
-ssize_t sysfs_get_sys_param_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_get_sys_param_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     //size_t l = count;
@@ -1688,8 +1688,8 @@ errexit:
 /*
  * SysFS interface for read/write of registers
  */
-ssize_t sysfs_get_reg_show(struct device *dev,
-                            struct device_attribute *attr,
+ssize_t sysfs_get_reg_show(struct kobject *kobj,
+                            struct kobj_attribute *attr,
                             char *buf)
 {
     int ret=0;
@@ -1722,8 +1722,8 @@ ssize_t sysfs_get_reg_show(struct device *dev,
 }
 
 
-ssize_t sysfs_get_reg_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_get_reg_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     int len;
@@ -1791,8 +1791,8 @@ errexit:
     return count;
 }
 extern struct   sc_command *sc_cmd;
-ssize_t sysfs_sc_reset_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_sc_reset_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     PRINT_FUNC("%zu bytes", count);
@@ -1827,8 +1827,8 @@ ssize_t sysfs_sc_reset_store(struct device *dev,
     return count;
 }
 
-ssize_t sysfs_set_reg_store(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_set_reg_store(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    const char *buf,
                                    size_t count) {
     //size_t l = count;
@@ -1917,14 +1917,14 @@ errexit:
  * SysFS interface to enable reporting to sensor app
  */
  
-ssize_t sysfs_enable_sensor_evt_show(struct device *dev,
-                                   struct device_attribute *attr,
+ssize_t sysfs_enable_sensor_evt_show(struct kobject *kobj,
+                                   struct kobj_attribute *attr,
                                    char *buf) {
     return snprintf(buf, PAGE_SIZE, "%d\n", snt8100fsr_g->en_sensor_evt);
 }
 
-ssize_t sysfs_enable_sensor_evt_store(struct device *dev,
-                                    struct device_attribute *attr,
+ssize_t sysfs_enable_sensor_evt_store(struct kobject *kobj,
+                                    struct kobj_attribute *attr,
                                     const char *buf,
                                     size_t count) {
     long value;
@@ -1949,161 +1949,191 @@ ssize_t sysfs_enable_sensor_evt_store(struct device *dev,
 /* SysFS Setup                                                              */
 /*==========================================================================*/
 // SYSFS_PERM_SHOW_STORE
-static DEVICE_ATTR(log_track_report,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_log_track_report_show,
-                   sysfs_log_track_report_store);
+static struct kobj_attribute dev_attr_log_track_report =
+                   __ATTR(log_track_report,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_log_track_report_show,
+                          sysfs_log_track_report_store);
 
-static DEVICE_ATTR(log_track_report_bin,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_log_track_report_bin_show,
-                   sysfs_log_track_report_bin_store);
+static struct kobj_attribute dev_attr_log_track_report_bin =
+                   __ATTR(log_track_report_bin,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_log_track_report_bin_show,
+                          sysfs_log_track_report_bin_store);
 
-static DEVICE_ATTR(event_log,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_event_log_show,
-                   sysfs_event_log_store);
+static struct kobj_attribute dev_attr_event_log =
+                   __ATTR(event_log,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_event_log_show,
+                          sysfs_event_log_store);
 
-static DEVICE_ATTR(log_d1test,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_log_d1test_show,
-                   sysfs_log_d1test_store);
+static struct kobj_attribute dev_attr_log_d1test =
+                   __ATTR(log_d1test,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_log_d1test_show,
+                          sysfs_log_d1test_store);
 
-static DEVICE_ATTR(log_frames,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_log_frames_show,
-                   sysfs_log_frames_store);
+static struct kobj_attribute dev_attr_log_frames =
+                   __ATTR(log_frames,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_log_frames_show,
+                          sysfs_log_frames_store);
 
-static DEVICE_ATTR(log_no_touch_frame,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_log_no_touch_frame_show,
-                   sysfs_log_no_touch_frame_store);
+static struct kobj_attribute dev_attr_log_no_touch_frame =
+                   __ATTR(log_no_touch_frame,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_log_no_touch_frame_show,
+                          sysfs_log_no_touch_frame_store);
 
-static DEVICE_ATTR(suspended_frame_rate,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_suspended_frame_rate_show,
-                   sysfs_suspended_frame_rate_store);
+static struct kobj_attribute dev_attr_suspended_frame_rate =
+                   __ATTR(suspended_frame_rate,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_suspended_frame_rate_show,
+                          sysfs_suspended_frame_rate_store);
 
-static DEVICE_ATTR(set_sys_param,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_set_sys_param_show,
-                   sysfs_set_sys_param_store);
+static struct kobj_attribute dev_attr_set_sys_param =
+                   __ATTR(set_sys_param,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_set_sys_param_show,
+                          sysfs_set_sys_param_store);
 
-static DEVICE_ATTR(get_sys_param,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_get_sys_param_show,
-                   sysfs_get_sys_param_store);
+static struct kobj_attribute dev_attr_get_sys_param =
+                   __ATTR(get_sys_param,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_get_sys_param_show,
+                          sysfs_get_sys_param_store);
 
-static DEVICE_ATTR(profile,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_profile_show,
-                   sysfs_profile_store);
+static struct kobj_attribute dev_attr_profile =
+                   __ATTR(profile,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_profile_show,
+                          sysfs_profile_store);
 
-static DEVICE_ATTR(get_reg,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_get_reg_show,
-                   sysfs_get_reg_store);
+static struct kobj_attribute dev_attr_get_reg =
+                   __ATTR(get_reg,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_get_reg_show,
+                          sysfs_get_reg_store);
 
 #ifdef SUPPORT_FLASH
-static DEVICE_ATTR(fwupdate,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_fwupdate_show,
-                   sysfs_fwupdate_store);
-static DEVICE_ATTR(read_flash_reg_part,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_read_flash_reg_part_show,
-                   sysfs_read_flash_reg_part_store);
+static struct kobj_attribute dev_attr_fwupdate =
+                   __ATTR(fwupdate,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_fwupdate_show,
+                          sysfs_fwupdate_store);
+static struct kobj_attribute dev_attr_read_flash_reg_part =
+                   __ATTR(read_flash_reg_part,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_read_flash_reg_part_show,
+                          sysfs_read_flash_reg_part_store);
 #endif
 
-static DEVICE_ATTR(enable_sensor_evt,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_enable_sensor_evt_show,
-                   sysfs_enable_sensor_evt_store);
+static struct kobj_attribute dev_attr_enable_sensor_evt =
+                   __ATTR(enable_sensor_evt,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_enable_sensor_evt_show,
+                          sysfs_enable_sensor_evt_store);
 
 #ifdef DYNAMIC_PWR_CTL
-static DEVICE_ATTR(enable_dynamic_pwr_ctl,
-                   SYSFS_PERM_SHOW_STORE,
-                   sysfs_enable_dynamic_pwr_ctl_show,
-                   sysfs_enable_dynamic_pwr_ctl_store);
+static struct kobj_attribute dev_attr_enable_dynamic_pwr_ctl =
+                   __ATTR(enable_dynamic_pwr_ctl,
+                          SYSFS_PERM_SHOW_STORE,
+                          sysfs_enable_dynamic_pwr_ctl_show,
+                          sysfs_enable_dynamic_pwr_ctl_store);
 #endif
 
 // SYSFS_PERM_STORE
-static DEVICE_ATTR(wake_device,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_wake_device_store);
+static struct kobj_attribute dev_attr_wake_device =
+                   __ATTR(wake_device,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_wake_device_store);
 
-static DEVICE_ATTR(load_registers,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_load_registers_store);
+static struct kobj_attribute dev_attr_load_registers =
+                   __ATTR(load_registers,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_load_registers_store);
 
-static DEVICE_ATTR(set_reg,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_set_reg_store);
+static struct kobj_attribute dev_attr_set_reg =
+                   __ATTR(set_reg,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_set_reg_store);
 
-static DEVICE_ATTR(deep_trace,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_deep_trace_store);
+static struct kobj_attribute dev_attr_deep_trace =
+                   __ATTR(deep_trace,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_deep_trace_store);
 
-static DEVICE_ATTR(sc_reset,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_sc_reset_store);
+static struct kobj_attribute dev_attr_sc_reset =
+                   __ATTR(sc_reset,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_sc_reset_store);
 
 #ifdef SUPPORT_FLASH
-static DEVICE_ATTR(write_flash_reg_part,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_write_flash_reg_part_store);
-static DEVICE_ATTR(write_flash_reg_part_file,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_write_flash_reg_part_file_store);
+static struct kobj_attribute dev_attr_write_flash_reg_part =
+                   __ATTR(write_flash_reg_part,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_write_flash_reg_part_store);
+static struct kobj_attribute dev_attr_write_flash_reg_part_file =
+                   __ATTR(write_flash_reg_part_file,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_write_flash_reg_part_file_store);
 #endif
 
-static DEVICE_ATTR(reg_script_file,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_reg_script_file_store);
+static struct kobj_attribute dev_attr_reg_script_file =
+                   __ATTR(reg_script_file,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_reg_script_file_store);
  
 // SYSFS_PERM_SHOW
-static DEVICE_ATTR(track_report,
-                   SYSFS_PERM_SHOW,
-                   sysfs_track_report_show,
-                   NULL);
+static struct kobj_attribute dev_attr_track_report =
+                   __ATTR(track_report,
+                          SYSFS_PERM_SHOW,
+                          sysfs_track_report_show,
+                          NULL);
 
-static DEVICE_ATTR(product_config,
-                   SYSFS_PERM_SHOW,
-                   sysfs_product_config_show,
-                   NULL);
+static struct kobj_attribute dev_attr_product_config =
+                   __ATTR(product_config,
+                          SYSFS_PERM_SHOW,
+                          sysfs_product_config_show,
+                          NULL);
 
-static DEVICE_ATTR(list_registers,
-                   SYSFS_PERM_SHOW,
-                   sysfs_list_registers_show,
-                   NULL);
+static struct kobj_attribute dev_attr_list_registers =
+                   __ATTR(list_registers,
+                          SYSFS_PERM_SHOW,
+                          sysfs_list_registers_show,
+                          NULL);
 
-static DEVICE_ATTR(version,
-                   SYSFS_PERM_SHOW,
-                   sysfs_version_show,
-                   NULL);
+static struct kobj_attribute dev_attr_version =
+                   __ATTR(version,
+                          SYSFS_PERM_SHOW,
+                          sysfs_version_show,
+                          NULL);
 
 /* Calibration write data +++ */
-static DEVICE_ATTR(boot_init_reg,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_boot_init_reg_store);
+static struct kobj_attribute dev_attr_boot_init_reg =
+                   __ATTR(boot_init_reg,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_boot_init_reg_store);
 
-static DEVICE_ATTR(chip_reset,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_chip_reset_store);
-static DEVICE_ATTR(version_info,
-                   SYSFS_PERM_STORE,
-                   NULL,
-                   sysfs_version_info_store);
+static struct kobj_attribute dev_attr_chip_reset =
+                   __ATTR(chip_reset,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_chip_reset_store);
+static struct kobj_attribute dev_attr_version_info =
+                   __ATTR(version_info,
+                          SYSFS_PERM_STORE,
+                          NULL,
+                          sysfs_version_info_store);
 /* Calibration write data --- */
 
 static struct attribute *sysfs_attrs_static[] = {
@@ -2243,7 +2273,7 @@ void free_sysfs_attrs(struct attribute **attrs) {
 
 struct attribute **alloc_sysfs_attrs(void) {
     int i;
-    struct device_attribute *da;
+    struct kobj_attribute *da;
     int reg_prefix_size;
     char *reg_name;
     char *full_name;
@@ -2289,7 +2319,7 @@ struct attribute **alloc_sysfs_attrs(void) {
 
         PRINT_DEBUG("Creating sysFS %d entry for: %s", pos, full_name);
 
-        da = memory_allocate(sizeof(struct device_attribute), 0);
+        da = memory_allocate(sizeof(struct kobj_attribute), 0);
         da->attr.name = full_name;
         da->attr.mode = SYSFS_PERM_SHOW_STORE;
         da->show = sysfs_register_show;
