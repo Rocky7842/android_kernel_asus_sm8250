@@ -28,6 +28,8 @@
 
 #define DSI_MODE_MAX 32
 
+#define BL_LOW_THRES 370
+
 /*
  * Defining custom dsi msg flag,
  * continued from drm_mipi_dsi.h
@@ -241,6 +243,8 @@ struct dsi_panel {
 	char asus_initial_code_version[16];
 	char asus_initial_code_description[32];
 	u64 asus_boost_panel_clock_rate_hz;
+	
+	u32 last_bl_lvl;
 };
 
 static inline bool dsi_panel_ulps_feature_enabled(struct dsi_panel *panel)

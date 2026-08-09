@@ -1976,6 +1976,11 @@ const char *cmd_set_prop_map[DSI_CMD_SET_MAX] = {
 	"qcom,mdss-dsi-switch-120fps-command",
 	"qcom,mdss-dsi-switch-90fps-command",
 	"qcom,mdss-dsi-switch-60fps-command",
+	"qcom,mdss-dsi-switch-160fps-low-bl-command",
+	"qcom,mdss-dsi-switch-144fps-low-bl-command",
+	"qcom,mdss-dsi-switch-120fps-low-bl-command",
+	"qcom,mdss-dsi-switch-90fps-low-bl-command",
+	"qcom,mdss-dsi-switch-60fps-low-bl-command",
 	"qcom,mdss-dsi-osc-command",
 	"qcom,mdss-dsi-hbm-on-command",
 	"qcom,mdss-dsi-hbm-off-command",
@@ -2016,6 +2021,11 @@ const char *cmd_set_state_map[DSI_CMD_SET_MAX] = {
 	"qcom,mdss-dsi-qsync-on-commands-state",
 	"qcom,mdss-dsi-qsync-off-commands-state",
 	/* ASUS BSP Display +++ */
+	"qcom,mdss-dsi-switch-fps-command-state",
+	"qcom,mdss-dsi-switch-fps-command-state",
+	"qcom,mdss-dsi-switch-fps-command-state",
+	"qcom,mdss-dsi-switch-fps-command-state",
+	"qcom,mdss-dsi-switch-fps-command-state",
 	"qcom,mdss-dsi-switch-fps-command-state",
 	"qcom,mdss-dsi-switch-fps-command-state",
 	"qcom,mdss-dsi-switch-fps-command-state",
@@ -4878,16 +4888,32 @@ int dsi_panel_asus_switch_fps(struct dsi_panel *panel, int type)
 
 	mutex_lock(&panel->panel_lock);
 
-	if (type == 2)
-		cmd_type = DSI_CMD_SET_60;
-	else if (type == 1)
-		cmd_type = DSI_CMD_SET_90;
-	else if (type == 0)
-		cmd_type = DSI_CMD_SET_120;
-	else if (type == 3)
-		cmd_type = DSI_CMD_SET_144;
-	else if (type == 4)
-		cmd_type = DSI_CMD_SET_160;
+	if (type == 2) {
+		if (panel->last_bl_lvl > BL_LOW_THRES)
+			cmd_type = DSI_CMD_SET_60;
+		else
+			cmd_type = DSI_CMD_SET_60_LOW_BL;
+	} else if (type == 1) {
+		if (panel->last_bl_lvl > BL_LOW_THRES)
+			cmd_type = DSI_CMD_SET_90;
+		else
+			cmd_type = DSI_CMD_SET_90_LOW_BL;
+	} else if (type == 0) {
+		if (panel->last_bl_lvl > BL_LOW_THRES)
+			cmd_type = DSI_CMD_SET_120;
+		else
+			cmd_type = DSI_CMD_SET_120_LOW_BL;
+	} else if (type == 3) {
+		if (panel->last_bl_lvl > BL_LOW_THRES)
+			cmd_type = DSI_CMD_SET_144;
+		else
+			cmd_type = DSI_CMD_SET_144_LOW_BL;
+	} else if (type == 4) {
+		if (panel->last_bl_lvl > BL_LOW_THRES)
+			cmd_type = DSI_CMD_SET_160;
+		else
+			cmd_type = DSI_CMD_SET_160_LOW_BL;
+	}
 
 	rc = dsi_panel_tx_cmd_set(panel, cmd_type);
 	if (rc) {

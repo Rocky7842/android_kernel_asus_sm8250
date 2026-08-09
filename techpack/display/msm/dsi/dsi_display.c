@@ -537,6 +537,13 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 
 error:
 	mutex_unlock(&panel->panel_lock);
+
+	if ((bl_lvl > BL_LOW_THRES && panel->last_bl_lvl <= BL_LOW_THRES) ||
+		(bl_lvl < BL_LOW_THRES && panel->last_bl_lvl >= BL_LOW_THRES)) {
+		panel->last_bl_lvl = bl_lvl;
+        asus_display_apply_fps_setting();
+	}
+
 	/* ASUS BSP Display +++ */
 	// delay backlight setting by fps
 	if (panel->asus_bl_delay != 0)
