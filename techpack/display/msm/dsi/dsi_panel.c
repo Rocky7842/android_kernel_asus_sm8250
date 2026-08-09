@@ -4876,6 +4876,7 @@ int dsi_panel_asus_switch_fps(struct dsi_panel *panel, int type)
 {
 	int rc = 0;
 	enum dsi_cmd_set_type cmd_type;
+	bool use_low_bl_cmd = false;
 
 	if (!panel || !panel->dfps_caps.dfps_support || asus_display_in_normal_off()) {
 		pr_err("[Display] invalid operation to set fps\n");
@@ -4888,31 +4889,34 @@ int dsi_panel_asus_switch_fps(struct dsi_panel *panel, int type)
 
 	mutex_lock(&panel->panel_lock);
 
+	if (panel->color_enhance_mode && panel->last_bl_lvl < BL_LOW_THRES && !panel->asus_global_hbm_mode)
+		use_low_bl_cmd = true;
+
 	if (type == 2) {
-		if (panel->last_bl_lvl > BL_LOW_THRES)
-			cmd_type = DSI_CMD_SET_60;
-		else
+		if (use_low_bl_cmd)
 			cmd_type = DSI_CMD_SET_60_LOW_BL;
+		else
+			cmd_type = DSI_CMD_SET_60;
 	} else if (type == 1) {
-		if (panel->last_bl_lvl > BL_LOW_THRES)
-			cmd_type = DSI_CMD_SET_90;
-		else
+		if (use_low_bl_cmd)
 			cmd_type = DSI_CMD_SET_90_LOW_BL;
+		else
+			cmd_type = DSI_CMD_SET_90;
 	} else if (type == 0) {
-		if (panel->last_bl_lvl > BL_LOW_THRES)
-			cmd_type = DSI_CMD_SET_120;
-		else
+		if (use_low_bl_cmd)
 			cmd_type = DSI_CMD_SET_120_LOW_BL;
+		else
+			cmd_type = DSI_CMD_SET_120;
 	} else if (type == 3) {
-		if (panel->last_bl_lvl > BL_LOW_THRES)
-			cmd_type = DSI_CMD_SET_144;
-		else
+		if (use_low_bl_cmd)
 			cmd_type = DSI_CMD_SET_144_LOW_BL;
-	} else if (type == 4) {
-		if (panel->last_bl_lvl > BL_LOW_THRES)
-			cmd_type = DSI_CMD_SET_160;
 		else
+			cmd_type = DSI_CMD_SET_144;
+	} else if (type == 4) {
+		if (use_low_bl_cmd)
 			cmd_type = DSI_CMD_SET_160_LOW_BL;
+		else
+			cmd_type = DSI_CMD_SET_160;
 	}
 
 	rc = dsi_panel_tx_cmd_set(panel, cmd_type);

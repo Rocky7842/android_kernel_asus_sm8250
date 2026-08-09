@@ -240,6 +240,8 @@ struct dsi_panel {
 	int asus_local_hbm_pending_mode;
 	int asus_global_hbm_cached_bl;
 
+	bool color_enhance_mode;
+
 	char asus_initial_code_version[16];
 	char asus_initial_code_description[32];
 	u64 asus_boost_panel_clock_rate_hz;

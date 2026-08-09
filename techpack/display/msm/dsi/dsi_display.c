@@ -6977,6 +6977,51 @@ static DEVICE_ATTR(fod_ui, 0444,
 			sysfs_fod_ui_read,
 			NULL);
 
+static ssize_t sysfs_color_enhance_read(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+
+	if (!display) {
+		pr_err("Invalid display\n");
+		return -EINVAL;
+	}
+
+	return scnprintf(buf, PAGE_SIZE, "%d\n", display->panel->color_enhance_mode);
+}
+
+static ssize_t sysfs_color_enhance_write(struct device *dev,
+	    struct device_attribute *attr, const char *buf, size_t count)
+{
+	struct dsi_display *display = dev_get_drvdata(dev);
+	bool color_enhance_mode;
+	int rc;
+
+	if (!display) {
+		pr_err("Invalid display\n");
+		return -EINVAL;
+	}
+
+	rc = kstrtobool(buf, &color_enhance_mode);
+	if (rc) {
+		pr_err("Failed to parse value, rc=%d\n", rc);
+		return rc;
+	}
+
+	if (!asus_display_in_normal_off()) {
+		display->panel->color_enhance_mode = color_enhance_mode;
+		asus_display_apply_fps_setting();
+	} else {
+		pr_err("[Display] unable to set low light color enhance mode in normal off mode\n");
+	}
+
+	return !rc ? count : rc;
+}
+
+static DEVICE_ATTR(color_enhance, 0644,
+			sysfs_color_enhance_read,
+			sysfs_color_enhance_write);
+
 static ssize_t sysfs_hbm_read(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -7022,6 +7067,7 @@ static DEVICE_ATTR(hbm, 0644,
 
 static struct attribute *display_fs_attrs[] = {
 	&dev_attr_fod_ui.attr,
+	&dev_attr_color_enhance.attr,
 	&dev_attr_hbm.attr,
 	NULL,
 };
